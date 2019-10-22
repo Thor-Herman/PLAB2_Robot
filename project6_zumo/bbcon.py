@@ -10,7 +10,7 @@ class BBCON:
         self.behaviors = []
         self.active_behaviors = []
         self.inactive_behaviors = []
-        self.sensobs = []
+        self.sensobs = sensobs
         self.motob = Motob()
         self.arbitrator = Arbitrator()
         self.current_timestep = 0.5
