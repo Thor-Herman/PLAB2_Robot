@@ -42,12 +42,9 @@ class BBCON:
         for behavior in self.active_behaviors:
             behavior.update()  # Er dette riktig måte å gjøre det på?
 
-    def update_motobs(self, motor_rec, halt_request):
-        """ :param motor_rec contains the motor recommendations
-            :param halt_request is a boolean value which decides if robot
-            should be shut down
-        """
-        self.motob.update(motor_rec, halt_request)
+    def update_motobs(self, motor_rec):
+        """ :param motor_rec contains the motor recommendations"""
+        self.motob.update(motor_rec)
 
     def reset_sensobs(self):
         """Resets the sensobs objects"""
@@ -58,8 +55,8 @@ class BBCON:
         """Executes a behavior"""
         self.update_sensobs()
         self.update_behaviors()
-        motor_rec, halt_req = self.arbitrator.choose_action(self.active_behaviors)
-        self.update_motobs(motor_rec, halt_req)
+        motor_rec = self.arbitrator.choose_action(self.active_behaviors)
+        self.update_motobs(motor_rec)
         sleep(self.current_timestep)
         self.reset_sensobs()
 
