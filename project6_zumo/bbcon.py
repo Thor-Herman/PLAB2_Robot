@@ -59,7 +59,3 @@ class BBCON:
         self.update_motobs(motor_rec)
         sleep(self.current_timestep)
         self.reset_sensobs()
-
-
-
-
