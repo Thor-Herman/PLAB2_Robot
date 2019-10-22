@@ -55,26 +55,30 @@ class BackwardsBehavior(Behavior):
         self.cam = self.sensobs[0]
         self.sonic = self.sensobs[1]
         self.prev_pic = []  # Record of the previous picture, not sure if needed
-        self.motob_rec = (-1, -1)  # Turn backwards
+        self.motob_rec = [-1, -1]  # Turn backwards
         self.sensitivity = sensitivity  # How large percentage of the image should be green
 
     def consider_deactivation(self):
         """Only if activated"""
-        if self.sonic.get_value() < 0.6 or self.process_image(self.cam.get_value()) < 0.3:  # Arbitrary vals
+        if self.sonic.get_value() < 0.6 or self.cam.get_value()["green"] < 0.3:  # Arbitrary vals
             self.active_flag = False
             self.bbcon.deactive_behavior(self)
             #  Should also notify sensob, can only deactivate if both cameras are not needed
 
     def consider_activation(self):
         """Only if deactivated"""
-        if self.sonic.get_value > 0.6 and self.process_image(self.cam.get_value) > 0.3:  # Arbitrary vals
+        if self.sonic.get_value > 0.6 and self.cam.get_value()["green"] > 0.3:  # Arbitrary vals
             self.active_flag = True
             self.bbcon.activate_behavior(self)
             #  Should also notify sensob
 
     def sense_and_act(self):
         """Main data method"""
+        green_perc = self.cam.get_value()["green"]
+        dist = self.sonic.get_value()
+        motor_req = [-1, -1]  # Not calculated, can be calculated if necessary
+        match_degree = (green_perc + (1-dist)) * 0.5  # The two % added and then halved
+        halt_req = False
+        return motor_req, match_degree, halt_req
 
-    def process_image(self, camera_readings):
-        """Returns the percentage of the image that is green"""
-        
+
