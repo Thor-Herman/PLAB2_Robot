@@ -58,7 +58,7 @@ class BBCON:
         """Executes a behavior"""
         self.update_sensobs()
         self.update_behaviors()
-        motor_rec, halt_req = arbitrator.choose_action(self.active_behaviors)
+        motor_rec, halt_req = self.arbitrator.choose_action(self.active_behaviors)
         self.update_motobs(motor_rec, halt_req)
         sleep(self.current_timestep)
         self.reset_sensobs()
