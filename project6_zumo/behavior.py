@@ -34,6 +34,7 @@ class Behavior:
             self.motob_rec = motor_req
             self.match_degree = match_deg
             self.halt_activity = halt_req
+            self.weight = match_deg * self.priority
 
     def get_recommendation(self):
         """Returns motor recommendation"""
@@ -80,5 +81,20 @@ class BackwardsBehavior(Behavior):
         match_degree = (green_perc + (1-dist)) * 0.5  # The two % added and then halved
         halt_req = False
         return motor_req, match_degree, halt_req
+
+
+class Forward(Behavior):
+
+
+    def __init__(self, bbcon, sensob, priority):
+        super().__init__(bbcon, sensob, priority)  # Sensob is sonic. Only one
+
+    def consider_activation(self):
+
+    def consider_deactivation(self):
+
+    def sense_and_act(self):
+        self.match_degree = 1 - self.sensobs.get_value()  # Invers av hvor nærme en er obstruction
+
 
 
