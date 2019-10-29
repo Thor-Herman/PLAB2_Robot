@@ -30,7 +30,7 @@ class Behavior:
         else:
             self.consider_activation()
         if self.active_flag:
-            motor_req, match_deg, halt_req = self.sense_and_act()
+            motor_req, match_deg, halt_req = self.sense_and_act()  # Returns three variables in children
             self.motob_rec = motor_req
             self.match_degree = match_deg
             self.halt_activity = halt_req
@@ -87,7 +87,8 @@ class Forward(Behavior):
 
     def __init__(self, bbcon, sensob, priority):
         super().__init__(bbcon, sensob, priority)  # Sensob is sonic. Only one
-        self.longest_distance = 50 # Longest distance the sensor realistically can sense. In cm
+        self.longest_distance = 50  # Longest distance the sensor realistically can sense. In cm
+        self.active_flag = True
 
     def consider_activation(self):
         # Possible to make a variable in BBCON which records color, and check that color.
@@ -100,7 +101,7 @@ class Forward(Behavior):
     def sense_and_act(self):
         """The closer to an object, the lower the match degree"""
         match_degree = self.sensobs.get_value()/50  # Invers av hvor nærme en er obstruction
-        motor_req = [1,1]  # Not calculated, can be calculated if necessary
+        motor_req = [1, 1]  # Not calculated, can be calculated if necessary
         halt_req = False
         return motor_req, match_degree, halt_req
 
@@ -137,3 +138,14 @@ class Stop(Behavior):
         halt_req = False
         return self.motob_rec, match_degree, halt_req
 
+
+class TurnRight(Behavior):
+
+    def __init__(self, bbcon, sensobs, priority):
+        super().__init__(bbcon, sensobs, priority)
+
+
+class TurnLeft(Behavior):
+
+    def __init__(self, bbcon, sensobs, priority):
+        super().__init__(bbcon, sensobs, priority)
