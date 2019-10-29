@@ -1,3 +1,4 @@
+__author__ = 'SondreOD'
 """Contains the motob object, a controller for motors"""
 from project6_supply.PLAB.motors import Motors
 
