@@ -1,8 +1,8 @@
-__author__ = 'SondreOD'
 """Contains the bbcon class which will only be instantiated once"""
 from time import sleep
 from arbitrator import Arbitrator
 from motob import Motob
+__author__ = 'SondreOD'
 
 
 class BBCON:
