@@ -12,6 +12,7 @@ class Motob:
 
     def update(self, motor_rec):
         """Updates the flag and values, calls operationalize"""
+        print(motor_rec[0])
         self.value = motor_rec[0]
         self.flag = motor_rec[1]
         self.operationalize()

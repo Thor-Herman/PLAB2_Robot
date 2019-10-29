@@ -9,7 +9,7 @@ from motors import Motors
 from ultrasonic import Ultrasonic
 from zumo_button import ZumoButton
 
-
+ower
 ## BE SURE TO RUN THESE DEMOS ON THE FLOOR or to have plenty of people guarding
 ## #  the edges of a table if it is run there.
 
@@ -71,4 +71,3 @@ def shoot_panorama(camera,motors,shots=5):
         motors.right(0.5,rotation_time)
         im = im.concat_horiz(IMR.Imager(image=camera.update()))
     return im
-
