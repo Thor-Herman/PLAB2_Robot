@@ -32,8 +32,8 @@ def create_sensors():
 
 def create_behaviors(bbcon, sensobs):
     forward_behav = Forward(bbcon, sensobs[1], 1)
-    backward_behav = BackwardsBehavior(bbcon, sensobs[0:1], 1, 0.3)
-    stop_behav = Stop(bbcon, sensobs[0:1], 1, 0.3)
+    backward_behav = BackwardsBehavior(bbcon, sensobs[0:2], 1, 0.3)
+    stop_behav = Stop(bbcon, sensobs[0:2], 1, 0.3)
     return [forward_behav, backward_behav, stop_behav]
 
 

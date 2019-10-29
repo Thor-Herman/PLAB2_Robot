@@ -1,7 +1,7 @@
 """Contains the bbcon class which will only be instantiated once"""
 from time import sleep
-from arbitrator import Arbitrator
-from motob import Motob
+from project6_zumo.arbitrator import Arbitrator
+from project6_zumo.motob import Motob
 __author__ = 'SondreOD'
 
 

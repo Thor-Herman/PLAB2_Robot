@@ -61,21 +61,21 @@ class BackwardsBehavior(Behavior):
 
     def consider_deactivation(self):
         """Only if activated"""
-        if self.sonic.get_value()/50 < 0.6 or self.cam.get_value()["green"] < self.sensitivity:  # Arbitrary vals
+        if self.sonic.get_value()/50 < 0.6 or self.cam.get_value()["Green"] < self.sensitivity:  # Arbitrary vals
             self.active_flag = False
-            self.bbcon.deactive_behavior(self)
+            self.bbcon.deactivate_behavior(self)
             #  Should also notify sensob, can only deactivate if both cameras are not needed
 
     def consider_activation(self):
         """Only if deactivated"""
-        if self.sonic.get_value/50 > 0.6 and self.cam.get_value()["green"] > self.sensitivity:  # Arbitrary vals
+        if self.sonic.get_value()/50 > 0.6 and self.cam.get_value()["Green"] > self.sensitivity:  # Arbitrary vals
             self.active_flag = True
             self.bbcon.activate_behavior(self)
             #  Should also notify sensob
 
     def sense_and_act(self):
         """Main data method"""
-        green_perc = self.cam.get_value()["green"]
+        green_perc = self.cam.get_value()["Green"]
         dist = self.sonic.get_value()/50
         motor_req = [-1, -1]  # Not calculated, can be calculated if necessary
         match_degree = (green_perc + dist) * 0.5  # The two % added and then halved
@@ -118,21 +118,21 @@ class Stop(Behavior):
 
     def consider_deactivation(self):
         """Only if activated"""
-        if self.sonic.get_value()/50 < 0.6 or self.cam.get_value()["red"] < self.sensitivity:  # Arbitrary vals
+        if self.sonic.get_value()/50 < 0.6 or self.cam.get_value()["Red"] < self.sensitivity:  # Arbitrary vals
             self.active_flag = False
-            self.bbcon.deactive_behavior(self)
+            self.bbcon.deactivate_behavior(self)
             #  Should also notify sensob, can only deactivate if both cameras are not needed
 
     def consider_activation(self):
         """Only if deactivated"""
-        if self.sonic.get_value/50 > 0.6 and self.cam.get_value()["red"] > self.sensitivity:  # Arbitrary vals
+        if self.sonic.get_value()/50 > 0.6 and self.cam.get_value()["Red"] > self.sensitivity:  # Arbitrary vals
             self.active_flag = True
             self.bbcon.activate_behavior(self)
             #  Should also notify sensob
 
     def sense_and_act(self):
         """Main data method"""
-        green_perc = self.cam.get_value()["red"]
+        green_perc = self.cam.get_value()["Red"]
         dist = self.sonic.get_value()/50
         match_degree = (green_perc + (1-dist)) * 0.5  # The two % added and then halved
         halt_req = False
