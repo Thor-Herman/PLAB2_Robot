@@ -1,30 +1,36 @@
+import numpy as np
 from project6_supply.PLAB.camera import Camera
 from project6_supply.PLAB.ultrasonic import Ultrasonic
 from project6_supply.PLAB.reflectance_sensors import ReflectanceSensors
-from PIL import Image
-import numpy as np
+
 
 class Sensob:
 
     def __init__(self, sensor):
+        """Initialize sensor"""
         self.sensor = sensor
         self.value = None
 
     def update(self):
+        """Update sensor values"""
         raise NotImplementedError
 
     def get_value(self):
+        """Return sensor value"""
         return self.value
 
     def reset(self):
+        """Set sensor value to None"""
         self.value = None
 
 class UltrasonicSensob(Sensob):
 
     def __init__(self, sensor):
+        """Initialize sensor"""
         super().__init__(sensor)
 
     def update(self):
+        """Update sensor values"""
         if isinstance(Ultrasonic, self.sensor):
             self.value = self.sensor.get_value()
 
@@ -33,9 +39,11 @@ class UltrasonicSensob(Sensob):
 class ReflectanceSensob(Sensob):
 
     def __init__(self, sensor):
+        """Initialize sensor"""
         super().__init__(sensor)
 
     def update(self):
+        """Update sensor values"""
         if isinstance(ReflectanceSensors, self.sensor):
             self.value = self.sensor.get_value()
 
@@ -43,31 +51,33 @@ class ReflectanceSensob(Sensob):
 class CameraSensob(Sensob):
 
     def __init__(self, sensor):
+        """Initialize sensor"""
         super().__init__(sensor)
 
     def update(self):
+        """Update sensor values"""
         colors = {"Red" : 0, "Green" : 0}
         if isinstance(Camera, self.sensor):
-            im = self.sensor.get_value()
-            HSVim = im.convert('HSV')
-            HSVna = np.array(HSVim)
-            H = HSVna[:, :, 0]
+            image = self.sensor.get_value()
+            hsv_im = image.convert('HSV')
+            hsv_na = np.array(hsv_im)
+            hsv_value = hsv_na[:, :, 0]
             # Find all red pixels
-            redLo, redHi = 340, 20
-            redLo = int((redLo * 255) / 360)
-            redHi = int((redHi * 255) / 360)
-            red = np.where((H > redLo) | ((H < redHi) & (H > 1)))
-            redCount = red[0].size
+            red_lo, red_hi = 340, 20
+            red_lo = int((red_lo * 255) / 360)
+            red_hi = int((red_hi * 255) / 360)
+            red = np.where((hsv_value > red_lo) | ((hsv_value < red_hi) & (hsv_value > 1)))
+            red_count = red[0].size
             # Find all green pixels
-            greenLo, greenHi = 100, 140
-            greenLo = int((greenLo * 255) / 360)
-            greenHi = int((greenHi * 255) / 360)
-            green = np.where((H > greenLo) & (H < greenHi))
-            greenCount = green[0].size
+            green_lo, green_hi = 100, 140
+            green_lo = int((green_lo * 255) / 360)
+            green_hi = int((green_hi * 255) / 360)
+            green = np.where((hsv_value > green_lo) & (hsv_value < green_hi))
+            green_count = green[0].size
             #Add percentage to color dict
-            x, y = im.size
-            colors["Red"] = redCount/(x * y)
-            colors["Green"] = greenCount/(x * y)
+            height, width = image.size
+            colors["Red"] = red_count/(height * width)
+            colors["Green"] = green_count/(height * width)
             self.value = colors
 
 
