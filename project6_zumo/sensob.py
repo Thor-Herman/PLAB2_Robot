@@ -27,7 +27,11 @@ class UltrasonicSensob(Sensob):
     def update(self):
         self.sensor.update()
         #if isinstance(Ultrasonic, self.sensor):
-        self.value = self.sensor.get_value()
+        dist = self.sensor.get_value()
+        if dist>10:
+            self.value = 0
+        else:
+            self.value = dist/10
 
 
 
