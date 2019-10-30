@@ -55,24 +55,21 @@ class BackwardsBehavior(Behavior):
         super().__init__(bbcon, sensobs, priority)  # Sensobs = Camera sensob, Ultrasonic sensob
         self.cam = self.sensobs[0]
         self.sonic = self.sensobs[1]
-        self.prev_pic = []  # Record of the previous picture, not sure if needed
         self.motob_rec = [-1, -1]  # Turn backwards
         self.sensitivity = sensitivity  # How large percentage of the image should be green
         self.dist = -1
 
     def consider_deactivation(self):
         """Only if activated"""
-        if self.sonic.get_value() < 0.6 or self.cam.get_value()["Green"] < self.sensitivity:  # Arbitrary vals
+        if self.sonic.get_value() == 0:
             self.active_flag = False
             self.bbcon.deactivate_behavior(self)
-            #  Should also notify sensob, can only deactivate if both cameras are not needed
 
     def consider_activation(self):
         """Only if deactivated"""
-        if self.sonic.get_value() > 0.6 or self.cam.get_value()["Green"] > self.sensitivity:  # Arbitrary vals
+        if self.sonic.get_value() != 0:
             self.active_flag = True
             self.bbcon.activate_behavior(self)
-            #  Should also notify sensob
 
     def sense_and_act(self):
         """Main data method"""
@@ -95,12 +92,14 @@ class Forward(Behavior):
         self.active_flag = True
 
     def consider_activation(self):
-        # Possible to make a variable in BBCON which records color, and check that color.
-        # If the color is red or green, then this does not need to activate. Otherwise should be active.
-        pass
+        if self.sensobs.get_value() == 0:
+            self.active_flag = True
+            self.bbcon.activate_behavior(self)
 
     def consider_deactivation(self):
-        pass
+        if self.sensobs.get_value() > 0.6:
+            self.active_flag = False
+            self.bbcon.deactivate_behavior(self)
 
     def sense_and_act(self):
         """The closer to an object, the lower the match degree"""
@@ -126,17 +125,17 @@ class Stop(Behavior):
 
     def consider_deactivation(self):
         """Only if activated"""
-        if self.sonic.get_value() < 0.6 or self.cam.get_value()["Red"] < self.sensitivity:  # Arbitrary vals
+        if self.sonic.get_value() == 0:
             self.active_flag = False
             self.bbcon.deactivate_behavior(self)
-            #  Should also notify sensob, can only deactivate if both cameras are not needed
+
 
     def consider_activation(self):
         """Only if deactivated"""
-        if self.sonic.get_value() > 0.6 or self.cam.get_value()["Red"] > self.sensitivity:  # Arbitrary vals
+        if self.sonic.get_value() != 0:
             self.active_flag = True
             self.bbcon.activate_behavior(self)
-            #  Should also notify sensob
+
 
     def sense_and_act(self):
         """Main data method"""
