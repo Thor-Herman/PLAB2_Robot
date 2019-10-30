@@ -31,7 +31,7 @@ class UltrasonicSensob(Sensob):
         if dist>10:
             self.value = 0
         else:
-            self.value = dist/10
+            self.value = 1-dist/10
 
 
 

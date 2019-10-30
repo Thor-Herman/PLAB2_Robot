@@ -79,7 +79,7 @@ class BackwardsBehavior(Behavior):
         green_perc = self.cam.get_value()["Green"]
         self.dist = self.sonic.get_value()
         motor_req = [-0.25, -0.25]  # Not calculated, can be calculated if necessary
-        match_degree = (green_perc + self.dist) * 0.5  # The two % added and then halved
+        match_degree = (green_perc*0.75 + self.dist*0.25)  # The two % added and then halved
         halt_req = False
         return motor_req, match_degree, halt_req
 
@@ -104,7 +104,7 @@ class Forward(Behavior):
 
     def sense_and_act(self):
         """The closer to an object, the lower the match degree"""
-        match_degree = self.sensobs.get_value()  # Invers av hvor nærme en er obstruction
+        match_degree = 1 - self.sensobs.get_value()  # Invers av hvor nærme en er obstruction
         motor_req = [0.25, 0.25]  # Not calculated, can be calculated if necessary
         halt_req = False
         return motor_req, match_degree, halt_req
@@ -142,13 +142,13 @@ class Stop(Behavior):
         """Main data method"""
         green_perc = self.cam.get_value()["Red"]
         self.dist = self.sonic.get_value()
-        match_degree = (green_perc + self.dist) * 0.5  # The two % added and then halved
+        match_degree = (green_perc*0.75 + self.dist*0.25) # The two % added and then halved
         halt_req = False
         return self.motob_rec, match_degree, halt_req
 
     def __str__(self):
         return 'StopBehavior, Motor_rec ' + str(self.motob_rec) + "Weight:" + str(self.weight)\
-               + "Distance:" + str(self.dist)
+               + "Distance:" + str(self.dist) + "Active: " + str(self.active_flag)
 
 
 class TurnRight(Behavior):
