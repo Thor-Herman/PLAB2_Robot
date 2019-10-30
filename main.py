@@ -6,9 +6,11 @@ from project6_supply.PLAB.camera import Camera
 from project6_supply.PLAB.ultrasonic import Ultrasonic
 from project6_supply.PLAB.reflectance_sensors import ReflectanceSensors
 from project6_zumo.behavior import *
+from project6_supply.PLAB.zumo_button import ZumoButton
 
 
 def main():
+    ZumoButton().wait_for_press()
     sensobs = create_sensors()
     bbcon = BBCON(sensobs)
     behav_list = create_behaviors(bbcon, sensobs)

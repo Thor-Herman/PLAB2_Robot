@@ -71,7 +71,6 @@ class CameraSensob(Sensob):
         x, y = im.size
         colors["Red"] = redCount/(x * y)
         colors["Green"] = greenCount/(x * y)
-        print(colors)
         self.value = colors
 
 

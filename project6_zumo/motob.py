@@ -9,10 +9,15 @@ class Motob:
         self.motor = Motors()
         self.value = []
         self.flag = False
+        # self.recs = {'L': self.motor.left,
+        #              'R': self.motor.right,
+        #              'F': self.motor.forward,
+        #             'B': self.motor.backward,
+        #             'S': self.motor.stop}
 
     def update(self, motor_rec):
         """Updates the flag and values, calls operationalize"""
-        print(motor_rec[0])
+        print(motor_rec)
         self.value = motor_rec[0]
         self.flag = motor_rec[1]
         self.operationalize()
@@ -23,3 +28,6 @@ class Motob:
             self.motor.stop()
             return
         self.motor.set_value(self.value, 0.5)
+
+    def stop(self):
+        self.motor.stop()
