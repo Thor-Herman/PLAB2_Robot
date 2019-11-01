@@ -34,6 +34,7 @@ class UltrasonicSensob(Sensob):
             self.value = 0
         else:
             self.value = 1-dist/10
+        print("Value from ultrasonic sensob:   ", self.value)
 
 
 class ReflectanceSensob(Sensob):
@@ -48,7 +49,8 @@ class ReflectanceSensob(Sensob):
         right_array = sens_array[3:6]
         left_average = sum(left_array)/3
         right_average = sum(right_array)/3
-        return left_average, right_average
+        self.value = [left_average, right_average]
+        print("Values from reflectance sensob:    ", self.value)
 
 class CameraSensob(Sensob):
 

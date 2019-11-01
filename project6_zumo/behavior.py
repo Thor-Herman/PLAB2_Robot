@@ -55,7 +55,7 @@ class BackwardsBehavior(Behavior):
         super().__init__(bbcon, sensobs, priority)  # Sensobs = Camera sensob, Ultrasonic sensob
         self.cam = self.sensobs[0]
         self.sonic = self.sensobs[1]
-        self.motob_rec = [-1, -1]  # Turn backwards
+        self.motob_rec = [-0.5, -0.5]  # Turn backwards
         self.sensitivity = sensitivity  # How large percentage of the image should be green
         self.dist = -1
 
@@ -92,14 +92,16 @@ class Forward(Behavior):
         self.active_flag = True
 
     def consider_activation(self):
-        if self.sensobs.get_value() == 0:
-            self.active_flag = True
-            self.bbcon.activate_behavior(self)
+        # if self.sensobs.get_value() == 0:
+        #     self.active_flag = True
+        #     self.bbcon.activate_behavior(self)
+        pass
 
     def consider_deactivation(self):
-        if self.sensobs.get_value() > 0.6:
-            self.active_flag = False
-            self.bbcon.deactivate_behavior(self)
+        # if self.sensobs.get_value() > 0.6:
+        #     self.active_flag = False
+        #     self.bbcon.deactivate_behavior(self)
+        pass
 
     def sense_and_act(self):
         """The closer to an object, the lower the match degree"""
@@ -153,42 +155,46 @@ class Turn(Behavior):
 
     def __init__(self, bbcon, sensobs, priority):
         super().__init__(bbcon, sensobs, priority)
-        self.margin = 0.1
+        self.margin = 0.04
         self.sensob_values = []
+        self.constant_a = 3
+        self.active_flag = True
 
     def consider_activation(self):
-        if sum(self.sensob_values) > self.margin:
-            self.active_flag = True
-            self.bbcon.activate_behavior(self)
+        # if self.difference > self.margin:
+        #     self.active_flag = True
+        #     self.bbcon.activate_behavior(self)
+        pass
 
     def consider_deactivation(self):
-        if sum(self.sensob_values) < self.margin:
-            self.active_flag = False
-            self.bbcon.deactivate_behavior(self)
+        # if self.difference < self.margin:
+        #     self.active_flag = False
+        #     self.bbcon.deactivate_behavior(self)'
+        pass
 
     def sense_and_act(self):
-        direction, value = self.compute()
+        direction = self.compute()
         if direction == -1:
-            motob_rec = [abs(value), 0]
+            motob_rec = [abs(self.difference)*2, 0]
         elif direction == 1:
-            motob_rec = [0, abs(value)]
+            motob_rec = [0, abs(self.difference)*2]
         else:
-            motob_rec = [0.5, 0.5]
-        match_degree = abs(value)  # Should probably be multiplied by constant. Same for motob_rec
+            motob_rec = [0.25, 0.25]
+        match_degree = abs(self.difference)*2 + sum(self.sensob_values)/2 # Should probably be multiplied by constant. Same for motob_rec
         halt_req = False
         return motob_rec, match_degree, halt_req
 
     def compute(self):
-        difference = self.sensob_values[0] - self.sensob_values[1]
-        if abs(difference) < self.margin:
-            return 0, 0
-        elif difference < 0:
-            return -1, difference
-        return 1, difference
+        if abs(self.difference) < self.margin:
+            return 0
+        elif self.difference < 0:
+            return -1
+        return 1
 
     def update(self):
         """Called each timestep"""
         self.sensob_values = self.sensobs.get_value()
+        self.difference = self.sensob_values[0] - self.sensob_values[1]
         if self.active_flag:
             self.consider_deactivation()
         else:
@@ -200,3 +206,6 @@ class Turn(Behavior):
             self.halt_activity = halt_req
             self.weight = match_deg * self.priority
 
+    def __str__(self):
+        return 'TurnBehavior, Motor_rec ' + str(self.motob_rec) + "Weight:" + str(self.weight) \
+               + "Values:" + str(self.sensob_values) + "Active: " + str(self.active_flag)

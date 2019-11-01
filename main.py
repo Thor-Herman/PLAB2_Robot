@@ -19,6 +19,7 @@ def main():
         bbcon.activate_behavior(behav)
     while True:
         bbcon.run_one_timestep()
+        print()
 
 
 def create_sensors():
@@ -33,11 +34,11 @@ def create_sensors():
 
 
 def create_behaviors(bbcon, sensobs):
-    forward_behav = Forward(bbcon, sensobs[1], 1)
+    #forward_behav = Forward(bbcon, sensobs[1], 1)
     backward_behav = BackwardsBehavior(bbcon, sensobs[0:2], 1, 0.3)
     stop_behav = Stop(bbcon, sensobs[0:2], 1, 0.3)
     turn_behav = Turn(bbcon, sensobs[2], 1)
-    return [forward_behav, backward_behav, stop_behav, turn_behav]
+    return [backward_behav, stop_behav, turn_behav]
 
 
 if __name__ == '__main__':
