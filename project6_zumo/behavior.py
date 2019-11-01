@@ -149,13 +149,54 @@ class Stop(Behavior):
                + "Distance:" + str(self.dist) + "Active: " + str(self.active_flag)
 
 
-class TurnRight(Behavior):
+class Turn(Behavior):
 
     def __init__(self, bbcon, sensobs, priority):
         super().__init__(bbcon, sensobs, priority)
+        self.margin = 0.1
+        self.sensob_values = []
 
+    def consider_activation(self):
+        if sum(self.sensob_values) > self.margin:
+            self.active_flag = True
+            self.bbcon.activate_behavior(self)
 
-class TurnLeft(Behavior):
+    def consider_deactivation(self):
+        if sum(self.sensob_values) < self.margin:
+            self.active_flag = False
+            self.bbcon.deactivate_behavior(self)
 
-    def __init__(self, bbcon, sensobs, priority):
-        super().__init__(bbcon, sensobs, priority)
+    def sense_and_act(self):
+        direction, value = self.compute()
+        if direction == -1:
+            motob_rec = [abs(value), 0]
+        elif direction == 1:
+            motob_rec = [0, abs(value)]
+        else:
+            motob_rec = [0.5, 0.5]
+        match_degree = abs(value)  # Should probably be multiplied by constant. Same for motob_rec
+        halt_req = False
+        return motob_rec, match_degree, halt_req
+
+    def compute(self):
+        difference = self.sensob_values[0] - self.sensob_values[1]
+        if abs(difference) < self.margin:
+            return 0, 0
+        elif difference < 0:
+            return -1, difference
+        return 1, difference
+
+    def update(self):
+        """Called each timestep"""
+        self.sensob_values = self.sensobs.get_value()
+        if self.active_flag:
+            self.consider_deactivation()
+        else:
+            self.consider_activation()
+        if self.active_flag:
+            motor_req, match_deg, halt_req = self.sense_and_act()  # Returns three variables in children
+            self.motob_rec = motor_req
+            self.match_degree = match_deg
+            self.halt_activity = halt_req
+            self.weight = match_deg * self.priority
+

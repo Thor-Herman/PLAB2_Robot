@@ -36,7 +36,8 @@ def create_behaviors(bbcon, sensobs):
     forward_behav = Forward(bbcon, sensobs[1], 1)
     backward_behav = BackwardsBehavior(bbcon, sensobs[0:2], 1, 0.3)
     stop_behav = Stop(bbcon, sensobs[0:2], 1, 0.3)
-    return [forward_behav, backward_behav, stop_behav]
+    turn_behav = Turn(bbcon, sensobs[2], 1)
+    return [forward_behav, backward_behav, stop_behav, turn_behav]
 
 
 if __name__ == '__main__':

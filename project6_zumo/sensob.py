@@ -4,6 +4,7 @@ from project6_supply.PLAB.reflectance_sensors import ReflectanceSensors
 from PIL import Image
 import numpy as np
 
+
 class Sensob:
 
     def __init__(self, sensor):
@@ -18,6 +19,7 @@ class Sensob:
 
     def reset(self):
         self.value = None
+
 
 class UltrasonicSensob(Sensob):
 
@@ -34,7 +36,6 @@ class UltrasonicSensob(Sensob):
             self.value = 1-dist/10
 
 
-
 class ReflectanceSensob(Sensob):
 
     def __init__(self, sensor):
@@ -42,9 +43,12 @@ class ReflectanceSensob(Sensob):
 
     def update(self):
         self.sensor.update()
-        #if isinstance(ReflectanceSensors, self.sensor):
-        self.value = self.sensor.get_value()
-
+        sens_array = self.sensor.get_value()
+        left_array = sens_array[0:3]
+        right_array = sens_array[3:6]
+        left_average = sum(left_array)/3
+        right_average = sum(right_array)/3
+        return left_average, right_average
 
 class CameraSensob(Sensob):
 
