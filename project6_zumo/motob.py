@@ -27,7 +27,7 @@ class Motob:
         if self.flag:
             self.motor.stop()
             return
-        self.motor.set_value(self.value, 1)
+        self.motor.set_value(self.value, 0.5)
 
     def stop(self):
         self.motor.stop()

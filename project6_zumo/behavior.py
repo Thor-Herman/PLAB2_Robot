@@ -82,7 +82,7 @@ class BackwardsBehavior(Behavior):
 
     def __str__(self):
         return 'BackwardsBehavior, Motor_rec ' + str(self.motob_rec) \
-               + "Weight:" + str(self.weight) + "Distance:" + str(self.dist)
+               + "Weight:" + str(self.weight) + "Distance:" + str(self.dist) + "Active:" + str(self.active_flag)
 
 
 class Forward(Behavior):
@@ -109,7 +109,8 @@ class Forward(Behavior):
         return motor_req, match_degree, halt_req
 
     def __str__(self):
-        return 'ForwardBehavior, Motor_rec ' + str(self.motob_rec) + "Weight:" + str(self.weight)
+        return 'ForwardBehavior, Motor_rec ' + str(self.motob_rec) + "Weight:" + str(self.weight)\
+                + "active:" + str(self.active_flag)
 
 
 class Stop(Behavior):
@@ -129,13 +130,11 @@ class Stop(Behavior):
             self.active_flag = False
             self.bbcon.deactivate_behavior(self)
 
-
     def consider_activation(self):
         """Only if deactivated"""
         if self.sonic.get_value() != 0:
             self.active_flag = True
             self.bbcon.activate_behavior(self)
-
 
     def sense_and_act(self):
         """Main data method"""
