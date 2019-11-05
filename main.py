@@ -16,7 +16,6 @@ def main():
     behav_list = create_behaviors(bbcon, sensobs)
     for behav in behav_list:
         bbcon.add_behavior(behav)
-        bbcon.activate_behavior(behav)
     while True:
         bbcon.run_one_timestep()
         print()

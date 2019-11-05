@@ -30,10 +30,12 @@ class UltrasonicSensob(Sensob):
         self.sensor.update()
         #if isinstance(Ultrasonic, self.sensor):
         dist = self.sensor.get_value()
-        if dist>10:
-            self.value = 0
+        if dist > 25:
+            dist = 0
         else:
-            self.value = 1-dist/10
+            dist = 1 - dist/25
+        self.value = dist
+        print("Distance", dist)
         print("Value from ultrasonic sensob:   ", self.value)
 
 
@@ -50,7 +52,7 @@ class ReflectanceSensob(Sensob):
         left_average = sum(left_array)/3
         right_average = sum(right_array)/3
         self.value = [left_average, right_average]
-        print("Values from reflectance sensob:    ", self.value)
+        # print("Values from reflectance sensob:    ", self.value)
 
 class CameraSensob(Sensob):
 
@@ -82,7 +84,7 @@ class CameraSensob(Sensob):
         colors["Red"] = redCount/(x * y)
         colors["Green"] = greenCount/(x * y)
         self.value = colors
-
+        # print("Picture colors: ", colors)
 
 
 

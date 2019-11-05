@@ -75,14 +75,17 @@ class BackwardsBehavior(Behavior):
         """Main data method"""
         green_perc = self.cam.get_value()["Green"]
         self.dist = self.sonic.get_value()
-        motor_req = [-0.25, -0.25]  # Not calculated, can be calculated if necessary
-        match_degree = (green_perc*0.75 + self.dist*0.25)  # The two % added and then halved
+        motor_req = [-0.15, -0.15]  # Not calculated, can be calculated if necessary
+        match_degree = (green_perc + self.dist*0.1)  # The two % added and then halved
+        if match_degree > 1:
+            match_degree = 1
         halt_req = False
         return motor_req, match_degree, halt_req
 
     def __str__(self):
         return 'BackwardsBehavior, Motor_rec ' + str(self.motob_rec) \
-               + "Weight:" + str(self.weight) + "Distance:" + str(self.dist) + "Active:" + str(self.active_flag)
+               + "  Weight    :" + str(self.weight) + "   Distance  :" + str(self.dist) +\
+               "  Active:   " + str(self.active_flag)
 
 
 class Forward(Behavior):
@@ -106,13 +109,13 @@ class Forward(Behavior):
     def sense_and_act(self):
         """The closer to an object, the lower the match degree"""
         match_degree = 1 - self.sensobs.get_value()  # Invers av hvor nærme en er obstruction
-        motor_req = [0.25, 0.25]  # Not calculated, can be calculated if necessary
+        motor_req = [0.15, 0.15]  # Not calculated, can be calculated if necessary
         halt_req = False
         return motor_req, match_degree, halt_req
 
     def __str__(self):
-        return 'ForwardBehavior, Motor_rec ' + str(self.motob_rec) + "Weight:" + str(self.weight)\
-                + "active:" + str(self.active_flag)
+        return 'ForwardBehavior, Motor_rec  ' + str(self.motob_rec) + "  Weight:  " + str(self.weight)\
+                + "  active:  " + str(self.active_flag)
 
 
 class Stop(Behavior):
@@ -131,34 +134,39 @@ class Stop(Behavior):
         if self.sonic.get_value() == 0:
             self.active_flag = False
             self.bbcon.deactivate_behavior(self)
+            self.bbcon.sensobs.remove(self.cam)
 
     def consider_activation(self):
         """Only if deactivated"""
-        if self.sonic.get_value() != 0:
+        if self.sonic.get_value() > 0.001:
             self.active_flag = True
             self.bbcon.activate_behavior(self)
+            self.bbcon.sensobs.append(self.cam)
 
     def sense_and_act(self):
         """Main data method"""
         green_perc = self.cam.get_value()["Red"]
         self.dist = self.sonic.get_value()
-        match_degree = (green_perc*0.75 + self.dist*0.25) # The two % added and then halved
+        match_degree = (green_perc + self.dist*0.1) # The two % added and then halved
+        if match_degree > 1:
+            match_degree = 1
         halt_req = False
         return self.motob_rec, match_degree, halt_req
 
     def __str__(self):
-        return 'StopBehavior, Motor_rec ' + str(self.motob_rec) + "Weight:" + str(self.weight)\
-               + "Distance:" + str(self.dist) + "Active: " + str(self.active_flag)
+        return 'StopBehavior, Motor_rec ' + str(self.motob_rec) + "  Weight:  " + str(self.weight)\
+               + "  Distance:  " + str(self.dist) + "  Active:  " + str(self.active_flag)
 
 
 class Turn(Behavior):
 
     def __init__(self, bbcon, sensobs, priority):
         super().__init__(bbcon, sensobs, priority)
-        self.margin = 0.04
+        self.margin = 0.07
         self.sensob_values = []
         self.constant_a = 3
         self.active_flag = True
+        self.bbcon.activate_behavior(self)
 
     def consider_activation(self):
         # if self.difference > self.margin:
@@ -175,12 +183,14 @@ class Turn(Behavior):
     def sense_and_act(self):
         direction = self.compute()
         if direction == -1:
-            motob_rec = [abs(self.difference)*2, 0]
+            motob_rec = [-0.20, 0.35]
         elif direction == 1:
-            motob_rec = [0, abs(self.difference)*2]
+            motob_rec = [0.35, -0.20]
         else:
-            motob_rec = [0.25, 0.25]
-        match_degree = abs(self.difference)*2 + sum(self.sensob_values)/2 # Should probably be multiplied by constant. Same for motob_rec
+            motob_rec = [0.15, 0.15]
+        match_degree = abs(self.difference)*4 + sum(self.sensob_values)/5
+        if match_degree > 1:
+            match_degree = 1
         halt_req = False
         return motob_rec, match_degree, halt_req
 

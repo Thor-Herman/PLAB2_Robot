@@ -14,7 +14,7 @@ class BBCON:
         self.sensobs = sensobs
         self.motob = Motob()
         self.arbitrator = Arbitrator()
-        self.current_timestep = 0.5
+        self.current_timestep = 0.05
 
     def add_behavior(self, behavior):
         """Adds a behavior to the list of behaviors"""
@@ -32,6 +32,8 @@ class BBCON:
         """Remove behavior from active behaviors"""
         if behavior in self.active_behaviors:
             self.active_behaviors.remove(behavior)
+            # print("Removed this behavior:    ", behavior)
+            # print(self.active_behaviors)
 
     def update_sensobs(self):
         """Query the sensobs for their values along with preprocessing the values"""
@@ -39,9 +41,9 @@ class BBCON:
             sensob.update()
 
     def update_behaviors(self):
-        """Updates the behaviors in active behaviors"""
-        for behavior in self.active_behaviors:
-            behavior.update()  # Er dette riktig måte å gjøre det på?
+        """Updates the behaviors in all behaviors"""
+        for behavior in self.behaviors:
+            behavior.update()
 
     def update_motobs(self, motor_rec):
         """ :param motor_rec contains the motor recommendations"""
