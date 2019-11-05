@@ -1,32 +1,36 @@
-from project6_supply.PLAB.camera import Camera
-from project6_supply.PLAB.ultrasonic import Ultrasonic
-from project6_supply.PLAB.reflectance_sensors import ReflectanceSensors
-from PIL import Image
+"""Contains sensob objects"""
 import numpy as np
+from PIL import Image
 
 
 class Sensob:
-
+    """Superclass for sensobs"""
     def __init__(self, sensor):
+        """Default init for sensobs"""
         self.sensor = sensor
         self.value = None
 
     def update(self):
+        """Must be implemented in subclasses"""
         raise NotImplementedError
 
     def get_value(self):
+        """Default function for all subclasses"""
         return self.value
 
     def reset(self):
+        """Resets the sensob value"""
         self.value = None
 
 
 class UltrasonicSensob(Sensob):
-
+    """Ultrasonicsensob object"""
     def __init__(self, sensor):
+        """initiates the ultrasonic"""
         super().__init__(sensor)
 
     def update(self):
+        """updates the ultrasonic sensob using the wrapper"""
         self.sensor.update()
         #if isinstance(Ultrasonic, self.sensor):
         dist = self.sensor.get_value()
@@ -40,11 +44,13 @@ class UltrasonicSensob(Sensob):
 
 
 class ReflectanceSensob(Sensob):
-
+    """reflectancesensob object"""
     def __init__(self, sensor):
+        """Uses super init"""
         super().__init__(sensor)
 
     def update(self):
+        """Updates the values"""
         self.sensor.update()
         sens_array = self.sensor.get_value()
         left_array = sens_array[0:3]
@@ -54,47 +60,37 @@ class ReflectanceSensob(Sensob):
         self.value = [left_average, right_average]
         # print("Values from reflectance sensob:    ", self.value)
 
-class CameraSensob(Sensob):
 
+class CameraSensob(Sensob):
+    """Initiates camerasensob"""
     def __init__(self, sensor):
+        """Uses super init"""
         super().__init__(sensor)
 
     def update(self):
-        colors = {"Red" : 0, "Green" : 0}
+        """Updates the image file and readings"""
+        colors = {"Red": 0, "Green": 0}
     #    if isinstance(Camera, self.sensor):
         self.sensor.update()
-        im = self.sensor.get_value()
-        HSVim = im.convert('HSV')
-        HSVna = np.array(HSVim)
-        H = HSVna[:, :, 0]
-        # Find all red pixels
-        redLo, redHi = 340, 20
-        redLo = int((redLo * 255) / 360)
-        redHi = int((redHi * 255) / 360)
-        red = np.where((H > redLo) | ((H < redHi) & (H > 1)))
-        redCount = red[0].size
-        # Find all green pixels
-        greenLo, greenHi = 100, 140
-        greenLo = int((greenLo * 255) / 360)
-        greenHi = int((greenHi * 255) / 360)
-        green = np.where((H > greenLo) & (H < greenHi))
-        greenCount = green[0].size
-        #Add percentage to color dict
-        x, y = im.size
-        colors["Red"] = redCount/(x * y)
-        colors["Green"] = greenCount/(x * y)
+        image = self.sensor.get_value()
+        hs_vim = image.convert('HSV')
+        hsv_na = np.array(hs_vim)
+        halo = hsv_na[:, :, 0]
+        # Find all red pix_sizeels
+        red_lo, red_hi = 340, 20
+        red_lo = int((red_lo * 255) / 360)
+        red_hi = int((red_hi * 255) / 360)
+        red = np.where((halo > red_lo) | ((halo < red_hi) & (halo > 1)))
+        red_count = red[0].size
+        # Find all green pix_sizeels
+        green_lo, green_hi = 100, 140
+        green_lo = int((green_lo * 255) / 360)
+        green_hi = int((green_hi * 255) / 360)
+        green = np.where((halo > green_lo) & (halo < green_hi))
+        green_count = green[0].size
+        # Add percentage to color dict
+        x_size, y_size = image.size
+        colors["Red"] = red_count/(x_size * y_size)
+        colors["Green"] = green_count/(x_size * y_size)
         self.value = colors
         # print("Picture colors: ", colors)
-
-
-
-
-
-
-
-
-
-
-
-
-

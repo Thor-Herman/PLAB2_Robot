@@ -30,4 +30,5 @@ class Motob:
         self.motor.set_value(self.value)
 
     def stop(self):
+        """Stops motors"""
         self.motor.stop()
