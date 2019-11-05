@@ -1,3 +1,4 @@
+"""This is the main function to run the program"""
 __author__ = "Thor-Herman"
 
 from project6_zumo.bbcon import BBCON
@@ -10,6 +11,7 @@ from project6_supply.PLAB.zumo_button import ZumoButton
 
 
 def main():
+    """Runs helper functions"""
     ZumoButton().wait_for_press()
     sensobs = create_sensors()
     bbcon = BBCON(sensobs)
@@ -22,6 +24,7 @@ def main():
 
 
 def create_sensors():
+    """Creates sensobs"""
     cam_sens = Camera()
     us_sens = Ultrasonic()
     refl_sens = ReflectanceSensors()
@@ -33,6 +36,7 @@ def create_sensors():
 
 
 def create_behaviors(bbcon, sensobs):
+    """Creates behaviors"""
     #forward_behav = Forward(bbcon, sensobs[1], 1)
     backward_behav = BackwardsBehavior(bbcon, sensobs[0:2], 1, 0.3)
     stop_behav = Stop(bbcon, sensobs[0:2], 1, 0.3)
@@ -42,4 +46,3 @@ def create_behaviors(bbcon, sensobs):
 
 if __name__ == '__main__':
     main()
-

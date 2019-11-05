@@ -1,3 +1,6 @@
+"""Holds the arbitrator class"""
+
+
 class Arbitrator:
     """Arbitrator finds the best behavior and returns it"""
     @staticmethod
